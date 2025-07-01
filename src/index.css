@@ -1,0 +1,1214 @@
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&family=Open+Sans:wght@300;400;500;600;700&family=Poppins:wght@400;500;600;700&display=swap');
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+:root {
+    --background: 0 0% 100%;
+    --foreground: 222.2 84% 4.9%;
+    --card: 0 0% 100%;
+    --card-foreground: 222.2 84% 4.9%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 222.2 84% 4.9%;
+    --primary: 221.2 83.2% 53.3%;
+    --primary-foreground: 210 40% 98%;
+    --secondary: 210 40% 96%;
+    --secondary-foreground: 222.2 84% 4.9%;
+    --muted: 210 40% 96%;
+    --muted-foreground: 215.4 16.3% 46.9%;
+    --accent: 210 40% 96%;
+    --accent-foreground: 222.2 84% 4.9%;
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 210 40% 98%;
+    --border: 214.3 31.8% 91.4%;
+    --input: 214.3 31.8% 91.4%;
+    --ring: 221.2 83.2% 53.3%;
+    --radius: 0.5rem;
+  }
+
+  .dark {
+    --background: 222.2 84% 4.9%;
+    --foreground: 210 40% 98%;
+    --card: 222.2 84% 4.9%;
+    --card-foreground: 210 40% 98%;
+    --popover: 222.2 84% 4.9%;
+    --popover-foreground: 210 40% 98%;
+    --primary: 217.2 91.2% 59.8%;
+    --primary-foreground: 222.2 84% 4.9%;
+    --secondary: 217.2 32.6% 17.5%;
+    --secondary-foreground: 210 40% 98%;
+    --muted: 217.2 32.6% 17.5%;
+    --muted-foreground: 215 20.2% 65.1%;
+    --accent: 217.2 32.6% 17.5%;
+    --accent-foreground: 210 40% 98%;
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 210 40% 98%;
+    --border: 217.2 32.6% 17.5%;
+    --input: 217.2 32.6% 17.5%;
+    --ring: 224.3 76.3% 94.1%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground font-sans;
+  }
+}
+
+@layer components {
+  /* Hero Gradient */
+  .hero-gradient {
+    background: linear-gradient(135deg, #FF6B35 0%, #004E89 50%, #FFD23F 100%);
+    background-size: 200% 200%;
+    animation: gradient-shift 8s ease infinite;
+  }
+
+  @keyframes gradient-shift {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+  }
+
+  /* Event Cards */
+  .event-card {
+    @apply border border-gray-200 rounded-lg bg-white shadow-sm;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .event-card:hover {
+    @apply shadow-xl border-primary/20;
+    transform: translateY(-2px);
+  }
+
+  /* Badges */
+  .festival-badge {
+    @apply bg-primary text-primary-foreground px-2 py-1 rounded-full text-xs font-medium;
+  }
+
+  .private-badge {
+    @apply bg-secondary text-secondary-foreground px-2 py-1 rounded-full text-xs font-medium;
+  }
+
+  /* Buttons */
+  .btn-primary {
+    @apply bg-primary hover:bg-primary/90 text-primary-foreground px-4 py-2 rounded-md font-medium transition-colors;
+  }
+
+  .btn-secondary {
+    @apply bg-secondary hover:bg-secondary/90 text-secondary-foreground px-4 py-2 rounded-md font-medium transition-colors;
+  }
+
+  .btn-accent {
+    @apply bg-accent hover:bg-accent/90 text-accent-foreground px-4 py-2 rounded-md font-medium transition-colors;
+  }
+
+  /* Typography */
+  .text-display {
+    @apply font-display;
+  }
+
+  .text-accent-font {
+    @apply font-accent;
+  }
+
+  /* Loading States */
+  .loading-spinner {
+    @apply animate-spin rounded-full border-2 border-gray-300 border-t-primary;
+  }
+
+  /* Media Components */
+  .media-upload-area {
+    @apply border-2 border-dashed border-gray-300 rounded-lg p-8 text-center hover:border-primary transition-colors cursor-pointer;
+  }
+
+  .media-upload-area.dragover {
+    @apply border-primary bg-primary/5;
+  }
+
+  /* Calendar Styles */
+  .calendar-day {
+    @apply w-10 h-10 flex items-center justify-center rounded-md text-sm font-medium transition-colors cursor-pointer;
+  }
+
+  .calendar-day:hover {
+    @apply bg-gray-100;
+  }
+
+  .calendar-day.today {
+    @apply bg-primary text-primary-foreground;
+  }
+
+  .calendar-day.has-event {
+    @apply bg-accent text-accent-foreground;
+  }
+
+  .calendar-day.selected {
+    @apply bg-secondary text-secondary-foreground;
+  }
+
+  /* News Cards */
+  .news-card {
+    @apply bg-white rounded-lg shadow-sm hover:shadow-md transition-shadow duration-300 overflow-hidden border border-gray-100;
+  }
+
+  .news-card:hover .news-image {
+    transform: scale(1.05);
+  }
+
+  .news-image {
+    @apply transition-transform duration-300;
+  }
+
+  /* Responsive utilities */
+  .container-custom {
+    @apply max-w-7xl mx-auto px-4 sm:px-6 lg:px-8;
+  }
+
+  /* Animation utilities */
+  .fade-in {
+    @apply animate-fade-in;
+  }
+
+  .slide-in {
+    @apply animate-slide-in;
+  }
+
+  /* Carousel Styles */
+  .carousel-container {
+    @apply relative overflow-hidden rounded-xl shadow-2xl;
+  }
+
+  .carousel-slide {
+    @apply w-full flex-shrink-0 transition-transform duration-700 ease-in-out;
+  }
+
+  .carousel-controls {
+    @apply absolute top-1/2 transform -translate-y-1/2 z-20;
+  }
+
+  .carousel-indicators {
+    @apply flex justify-center space-x-3 mt-8 px-4;
+  }
+
+  .carousel-indicator {
+    @apply rounded-full transition-all duration-300 cursor-pointer hover:shadow-md;
+  }
+
+  .carousel-indicator.active {
+    @apply w-10 h-4 bg-primary shadow-lg transform scale-105;
+  }
+
+  .carousel-indicator.inactive {
+    @apply w-4 h-4 bg-gray-400 hover:bg-gray-500 hover:scale-125 hover:shadow-md;
+  }
+
+  /* News Carousel Specific - Melhorado */
+  .news-carousel-overlay {
+    @apply absolute inset-0 bg-gradient-to-t from-black/85 via-black/30 to-transparent;
+  }
+
+  .news-carousel-content {
+    @apply absolute inset-0;
+  }
+
+  .news-carousel-image {
+    @apply w-full h-80 md:h-96 lg:h-[28rem] object-cover;
+  }
+
+  .news-carousel-icon {
+    @apply w-28 h-28 md:w-32 md:h-32 lg:w-36 lg:h-36 bg-white/15 rounded-full flex items-center justify-center backdrop-blur-md border border-white/20 transition-all duration-300 hover:scale-110;
+  }
+
+  .news-carousel-badge {
+    @apply bg-white/25 text-white border-white/30 px-4 py-2 text-sm font-medium backdrop-blur-sm rounded-full;
+  }
+
+  .news-carousel-title {
+    @apply text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-bold font-display leading-tight text-white drop-shadow-2xl;
+  }
+
+  .news-carousel-description {
+    @apply text-lg sm:text-xl md:text-2xl lg:text-3xl text-white/95 max-w-4xl leading-relaxed drop-shadow-lg;
+  }
+
+  .news-carousel-button {
+    @apply bg-white/20 hover:bg-white/30 text-white border border-white/30 backdrop-blur-sm px-8 py-4 text-lg font-medium transition-all duration-300 hover:scale-105 hover:shadow-lg rounded-lg;
+  }
+
+  .news-carousel-nav {
+    @apply absolute top-1/2 transform -translate-y-1/2 bg-white/95 hover:bg-white border-white/50 shadow-xl z-20 w-14 h-14 transition-all duration-300 hover:scale-110 hover:shadow-2xl rounded-full flex items-center justify-center;
+  }
+
+  /* Melhor responsividade para badges */
+  .news-carousel-badges {
+    @apply flex flex-wrap items-center gap-3 sm:gap-4;
+  }
+
+  /* Espaçamento melhorado para conteúdo */
+  .news-carousel-content-wrapper {
+    @apply space-y-4 sm:space-y-5 md:space-y-6;
+  }
+
+  /* Botão de ação com melhor padding */
+  .news-carousel-action {
+    @apply pt-4 sm:pt-6 md:pt-8;
+  }
+
+  /* Seção do carrossel melhorada */
+  .carousel-section {
+    @apply py-12 lg:py-16 bg-gradient-to-b from-muted/30 via-background to-muted/20;
+  }
+
+  .carousel-wrapper {
+    @apply relative max-w-6xl mx-auto px-4;
+  }
+
+  .carousel-header {
+    @apply text-center mb-8 lg:mb-12;
+  }
+
+  .carousel-title {
+    @apply text-3xl lg:text-4xl font-bold font-display mb-3 lg:mb-4;
+  }
+
+  .carousel-subtitle {
+    @apply text-muted-foreground text-lg lg:text-xl max-w-2xl mx-auto;
+  }
+
+  /* Eventos de Fim de Semana */
+  .weekend-events-section {
+    @apply py-12 bg-gradient-to-b from-background to-muted/10;
+  }
+
+  .weekend-event-card {
+    @apply bg-white rounded-lg shadow-sm border border-border hover:shadow-md transition-all duration-300 hover:scale-[1.02];
+  }
+
+  .weekend-event-badge-public {
+    @apply bg-green-100 text-green-800 border-green-200;
+  }
+
+  .weekend-event-badge-private {
+    @apply bg-blue-100 text-blue-800 border-blue-200;
+  }
+
+  .line-clamp-1 {
+    display: -webkit-box;
+    -webkit-line-clamp: 1;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  .line-clamp-2 {
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  /* Badges melhorados com design moderno */
+  .event-badge-public {
+    background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+    color: white;
+    border: none;
+    font-weight: 600;
+    font-size: 0.75rem;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    box-shadow: 
+      0 4px 12px rgba(16, 185, 129, 0.3),
+      0 2px 4px rgba(16, 185, 129, 0.2);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    border-radius: 8px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .event-badge-public::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, 
+      transparent 0%, 
+      rgba(255, 255, 255, 0.2) 50%, 
+      transparent 100%
+    );
+    transition: left 0.6s ease;
+  }
+
+  .event-badge-public:hover::before {
+    left: 100%;
+  }
+
+  .event-badge-public:hover {
+    transform: translateY(-1px);
+    box-shadow: 
+      0 6px 16px rgba(16, 185, 129, 0.4),
+      0 3px 6px rgba(16, 185, 129, 0.3);
+  }
+
+  .event-badge-private {
+    background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
+    color: white;
+    border: none;
+    font-weight: 600;
+    font-size: 0.75rem;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    box-shadow: 
+      0 4px 12px rgba(59, 130, 246, 0.3),
+      0 2px 4px rgba(59, 130, 246, 0.2);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    border-radius: 8px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .event-badge-private::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, 
+      transparent 0%, 
+      rgba(255, 255, 255, 0.2) 50%, 
+      transparent 100%
+    );
+    transition: left 0.6s ease;
+  }
+
+  .event-badge-private:hover::before {
+    left: 100%;
+  }
+
+  .event-badge-private:hover {
+    transform: translateY(-1px);
+    box-shadow: 
+      0 6px 16px rgba(59, 130, 246, 0.4),
+      0 3px 6px rgba(59, 130, 246, 0.3);
+  }
+
+  .event-badge-category {
+    background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+    color: white;
+    border: none;
+    font-weight: 600;
+    font-size: 0.75rem;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    box-shadow: 
+      0 4px 12px rgba(245, 158, 11, 0.3),
+      0 2px 4px rgba(245, 158, 11, 0.2);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    border-radius: 8px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .event-badge-category::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, 
+      transparent 0%, 
+      rgba(255, 255, 255, 0.2) 50%, 
+      transparent 100%
+    );
+    transition: left 0.6s ease;
+  }
+
+  .event-badge-category:hover::before {
+    left: 100%;
+  }
+
+  .event-badge-category:hover {
+    transform: translateY(-1px);
+    box-shadow: 
+      0 6px 16px rgba(245, 158, 11, 0.4),
+      0 3px 6px rgba(245, 158, 11, 0.3);
+  }
+
+  /* Ícones com cor primária */
+  .event-icon {
+    @apply text-primary;
+    filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.1));
+  }
+
+  /* Botão Ver Detalhes melhorado */
+  .event-details-btn {
+    @apply px-4 py-2 text-xs font-medium rounded-md border border-gray-200 bg-white hover:bg-primary hover:text-white hover:border-primary;
+    transition: all 0.2s ease-in-out;
+  }
+
+  .event-details-btn:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  }
+
+  /* Preço em destaque */
+  .event-price {
+    @apply text-lg font-bold bg-gradient-to-r from-primary to-primary/80 bg-clip-text text-transparent;
+  }
+
+  /* Separador sutil */
+  .event-divider {
+    @apply border-t border-gray-100;
+    background: linear-gradient(to right, transparent, rgba(0, 0, 0, 0.05), transparent);
+  }
+
+  /* Container do Evento em Destaque */
+  .event-detail-container {
+    position: relative;
+    background: linear-gradient(135deg, rgba(255, 255, 255, 1) 0%, rgba(248, 250, 252, 1) 100%);
+    border: 2px solid rgba(var(--primary), 0.12);
+    box-shadow: 
+      0 4px 6px -1px rgba(0, 0, 0, 0.1),
+      0 2px 4px -1px rgba(0, 0, 0, 0.06),
+      0 0 0 1px rgba(var(--primary), 0.05);
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+  }
+
+  .event-detail-container:hover {
+    box-shadow: 
+      0 20px 25px -5px rgba(0, 0, 0, 0.1),
+      0 10px 10px -5px rgba(0, 0, 0, 0.04),
+      0 0 0 1px rgba(var(--primary), 0.1);
+    transform: translateY(-4px);
+    border-color: rgba(var(--primary), 0.2);
+  }
+
+  /* Header das abas com gradiente melhorado */
+  .event-tabs-header {
+    background: linear-gradient(135deg, 
+      rgba(var(--primary), 0.03) 0%, 
+      rgba(var(--secondary), 0.03) 50%,
+      rgba(var(--primary), 0.03) 100%
+    );
+    border-bottom: 1px solid rgba(var(--primary), 0.08);
+    position: relative;
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+  }
+
+  .event-tabs-header::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, 
+      transparent 0%, 
+      rgba(var(--primary), 0.4) 25%, 
+      rgba(var(--secondary), 0.4) 75%, 
+      transparent 100%
+    );
+  }
+
+  .event-tabs-header::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 60%;
+    height: 1px;
+    background: linear-gradient(90deg, 
+      transparent 0%, 
+      rgba(var(--primary), 0.2) 50%, 
+      transparent 100%
+    );
+  }
+
+  /* Melhorias nas abas */
+  .tab-navigation button {
+    position: relative;
+    overflow: hidden;
+    border-radius: 12px;
+    font-weight: 500;
+    letter-spacing: 0.025em;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .tab-navigation button::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, 
+      transparent 0%, 
+      rgba(255, 255, 255, 0.2) 50%, 
+      transparent 100%
+    );
+    transition: left 0.5s ease;
+  }
+
+  .tab-navigation button:hover::before {
+    left: 100%;
+  }
+
+  .tab-navigation button:hover {
+    transform: translateY(-2px) scale(1.02);
+    box-shadow: 0 4px 12px rgba(var(--primary), 0.15);
+  }
+
+  /* Abas ativas melhoradas */
+  .tab-active {
+    background: linear-gradient(135deg, 
+      rgba(var(--primary), 0.9) 0%, 
+      rgba(var(--primary), 1) 50%,
+      rgba(var(--secondary), 0.9) 100%
+    ) !important;
+    color: white !important;
+    box-shadow: 
+      0 8px 16px rgba(var(--primary), 0.3),
+      0 4px 6px rgba(var(--primary), 0.2),
+      inset 0 1px 0 rgba(255, 255, 255, 0.2);
+    transform: translateY(-3px);
+    border: 1px solid rgba(var(--primary), 0.3);
+  }
+
+  .tab-active::after {
+    content: '';
+    position: absolute;
+    bottom: -2px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 80%;
+    height: 3px;
+    background: linear-gradient(90deg, 
+      transparent 0%, 
+      white 50%, 
+      transparent 100%
+    );
+    border-radius: 2px;
+  }
+
+  /* Badge de destaque melhorado */
+  .event-highlight-badge {
+    position: absolute;
+    top: -12px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: linear-gradient(135deg, 
+      rgba(var(--primary), 1) 0%, 
+      rgba(var(--secondary), 1) 50%,
+      rgba(var(--primary), 1) 100%
+    );
+    color: white;
+    padding: 8px 20px;
+    border-radius: 20px;
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    box-shadow: 
+      0 8px 16px rgba(var(--primary), 0.3),
+      0 4px 6px rgba(var(--primary), 0.2);
+    z-index: 10;
+    border: 2px solid white;
+    animation: pulse-glow 3s ease-in-out infinite;
+  }
+
+  @keyframes pulse-glow {
+    0%, 100% {
+      box-shadow: 
+        0 8px 16px rgba(var(--primary), 0.3),
+        0 4px 6px rgba(var(--primary), 0.2),
+        0 0 0 0 rgba(var(--primary), 0.4);
+    }
+    50% {
+      box-shadow: 
+        0 8px 16px rgba(var(--primary), 0.4),
+        0 4px 6px rgba(var(--primary), 0.3),
+        0 0 0 8px rgba(var(--primary), 0.1);
+    }
+  }
+
+  /* Melhorias nos cards internos */
+  .event-detail-container .event-card {
+    border: 1px solid rgba(var(--primary), 0.08);
+    background: linear-gradient(135deg, 
+      rgba(255, 255, 255, 0.9) 0%, 
+      rgba(248, 250, 252, 0.9) 100%
+    );
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+  }
+
+  .event-detail-container .event-card:hover {
+    transform: translateY(-4px) scale(1.02);
+    box-shadow: 
+      0 12px 20px rgba(0, 0, 0, 0.1),
+      0 4px 8px rgba(0, 0, 0, 0.06);
+    border-color: rgba(var(--primary), 0.15);
+  }
+
+  /* Tipografia hierárquica */
+  .event-detail-container h3 {
+    background: linear-gradient(135deg, 
+      rgba(var(--primary), 1) 0%, 
+      rgba(var(--secondary), 1) 100%
+    );
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    font-weight: 800;
+    letter-spacing: -0.025em;
+  }
+
+  .event-detail-container h4 {
+    color: rgba(var(--primary), 0.9);
+    font-weight: 600;
+    letter-spacing: -0.015em;
+  }
+
+  /* Badges melhorados */
+  .event-detail-container .badge {
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    font-weight: 600;
+    letter-spacing: 0.025em;
+  }
+
+  /* Responsividade aprimorada */
+  @media (max-width: 640px) {
+    .event-detail-container {
+      margin: 1rem 0.5rem;
+      border-radius: 16px;
+    }
+    
+    .event-highlight-badge {
+      top: -8px;
+      padding: 6px 16px;
+      font-size: 0.7rem;
+    }
+    
+    .tab-navigation {
+      gap: 0.5rem;
+      padding: 0.75rem 0;
+      margin: 0 0.5rem;
+    }
+    
+    .tab-navigation button {
+      padding: 0.5rem 0.75rem;
+      font-size: 0.875rem;
+      border-radius: 8px;
+    }
+  }
+
+  /* Melhorias específicas para hierarquia visual */
+  .event-tabs-header h2 {
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    position: relative;
+  }
+
+  .event-tabs-header h2::after {
+    content: '';
+    position: absolute;
+    bottom: -8px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 60px;
+    height: 3px;
+    background: linear-gradient(90deg, 
+      rgba(var(--primary), 0.8) 0%, 
+      rgba(var(--secondary), 0.8) 100%
+    );
+    border-radius: 2px;
+  }
+
+  /* Melhorias nos cards de informações rápidas */
+  .event-tabs-header .grid > div {
+    position: relative;
+    overflow: hidden;
+  }
+
+  .event-tabs-header .grid > div::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, 
+      transparent 0%, 
+      rgba(255, 255, 255, 0.4) 50%, 
+      transparent 100%
+    );
+    transition: left 0.6s ease;
+  }
+
+  .event-tabs-header .grid > div:hover::before {
+    left: 100%;
+  }
+
+     /* Container dos badges melhorado */
+   .badges-container {
+  display: flex;
+     align-items: center;
+     justify-content: center;
+     gap: 0.75rem;
+     flex-wrap: wrap;
+     margin-bottom: 1.5rem;
+   }
+
+   .badges-container .badge-wrapper {
+     position: relative;
+     display: inline-flex;
+     align-items: center;
+   }
+
+
+
+  /* Melhorias na navegação das abas */
+  .tab-navigation {
+    position: relative;
+  }
+
+  .tab-navigation::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(135deg, 
+      rgba(255, 255, 255, 0.8) 0%, 
+      rgba(248, 250, 252, 0.8) 100%
+    );
+    border-radius: inherit;
+    z-index: -1;
+  }
+
+  /* Estados das abas com cores específicas */
+  .tab-navigation button[data-tab="programacao"].tab-active {
+    background: linear-gradient(135deg, #f97316 0%, #dc2626 100%) !important;
+  }
+
+  .tab-navigation button[data-tab="locais"].tab-active {
+    background: linear-gradient(135deg, #3b82f6 0%, #06b6d4 100%) !important;
+  }
+
+  .tab-navigation button[data-tab="noticias"].tab-active {
+    background: linear-gradient(135deg, #10b981 0%, #059669 100%) !important;
+  }
+
+  .tab-navigation button[data-tab="informacoes"].tab-active {
+    background: linear-gradient(135deg, #8b5cf6 0%, #ec4899 100%) !important;
+  }
+
+  /* Efeitos de hover melhorados */
+  .tab-navigation button:not(.tab-active):hover {
+    background: rgba(255, 255, 255, 0.8) !important;
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+  }
+
+  /* Transições suaves para mudanças de aba */
+  .tab-content {
+    animation: fadeInUp 0.4s ease-out;
+  }
+
+  @keyframes fadeInUp {
+    from {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  /* Melhorias nos cards internos das abas */
+  .event-detail-container .event-card {
+    position: relative;
+    overflow: hidden;
+  }
+
+  .event-detail-container .event-card::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, 
+      rgba(var(--primary), 0.6) 0%, 
+      rgba(var(--secondary), 0.6) 100%
+    );
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 0.3s ease;
+  }
+
+  .event-detail-container .event-card:hover::after {
+    transform: scaleX(1);
+  }
+
+  /* Status e CTA melhorados */
+  .event-detail-container button {
+    position: relative;
+    overflow: hidden;
+  }
+
+  .event-detail-container button::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, 
+      transparent 0%, 
+      rgba(255, 255, 255, 0.2) 50%, 
+      transparent 100%
+    );
+    transition: left 0.5s ease;
+  }
+
+  .event-detail-container button:hover::before {
+    left: 100%;
+  }
+
+     /* Micro-interações */
+   .event-highlight-badge {
+     cursor: default;
+     -webkit-user-select: none;
+     -moz-user-select: none;
+     -ms-user-select: none;
+     user-select: none;
+   }
+
+  .event-highlight-badge:hover {
+    animation-play-state: paused;
+  }
+
+  /* Melhorias de acessibilidade */
+  .tab-navigation button:focus {
+    outline: 2px solid rgba(var(--primary), 0.5);
+    outline-offset: 2px;
+  }
+
+  .event-detail-container .event-card:focus-within {
+    ring: 2px;
+    ring-color: rgba(var(--primary), 0.3);
+    ring-offset: 2px;
+  }
+
+  /* Custom scrollbar */
+  ::-webkit-scrollbar {
+    width: 8px;
+  }
+
+  ::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 4px;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background: #FF6B35;
+    border-radius: 4px;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    background: #E85A2A;
+  }
+
+  /* Print styles */
+  @media print {
+    .no-print {
+      display: none !important;
+    }
+  }
+
+  /* Menu Mobile Styles */
+  .mobile-menu-backdrop {
+    background: rgba(0, 0, 0, 0.1);
+    -webkit-backdrop-filter: blur(2px);
+    backdrop-filter: blur(2px);
+  }
+
+  .mobile-menu-item {
+    transition: all 0.2s ease;
+    border-radius: 8px;
+  }
+
+  .mobile-menu-item:hover {
+    background: rgba(var(--muted), 0.5);
+    transform: translateX(4px);
+  }
+
+  .mobile-menu-item:active {
+    transform: translateX(2px);
+    background: rgba(var(--primary), 0.1);
+  }
+
+  /* Animação suave para o menu mobile */
+  @keyframes slideDown {
+    from {
+      opacity: 0;
+      transform: translateY(-10px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  .mobile-menu-open {
+    animation: slideDown 0.3s ease-out;
+  }
+
+  /* Melhoria na navegação por abas para mobile */
+  @media (max-width: 640px) {
+    .tab-navigation {
+      gap: 0.5rem;
+      padding: 0.75rem 0;
+    }
+    
+    .tab-navigation button {
+      padding: 0.5rem 0.75rem;
+      font-size: 0.875rem;
+      min-width: max-content;
+      flex-shrink: 0;
+    }
+    
+    .tab-navigation button span {
+      display: none;
+    }
+    
+    .tab-navigation button .lucide {
+      margin-right: 0;
+    }
+  }
+
+  /* Melhorias gerais para todos os badges */
+  .event-badge-public,
+  .event-badge-private,
+  .event-badge-category {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    white-space: nowrap;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+  }
+
+  /* Badges em containers especiais */
+  .badges-container .event-badge-category,
+  .badges-container .event-badge-private {
+    font-size: 0.8rem;
+    padding: 0.75rem 1rem;
+    min-height: 2.5rem;
+    border-radius: 12px;
+  }
+
+  /* Badges em cards de eventos */
+  .event-card .event-badge-category,
+  .event-card .event-badge-private,
+  .event-card .event-badge-public {
+    font-size: 0.7rem;
+    padding: 0.5rem 0.75rem;
+    min-height: auto;
+  border-radius: 8px;
+  }
+
+  /* Responsividade dos badges */
+  @media (max-width: 640px) {
+    .badges-container .event-badge-category,
+    .badges-container .event-badge-private {
+      font-size: 0.75rem;
+      padding: 0.6rem 0.8rem;
+      min-height: 2.2rem;
+    }
+    
+    .event-card .event-badge-category,
+    .event-card .event-badge-private,
+    .event-card .event-badge-public {
+      font-size: 0.65rem;
+      padding: 0.4rem 0.6rem;
+    }
+  }
+
+  /* Estilos para imagens dos eventos */
+  .event-card img {
+    transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .event-card:hover img {
+    transform: scale(1.1);
+  }
+
+  /* Efeito de loading para imagens */
+  .event-card img {
+    background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+    background-size: 200% 100%;
+    animation: loading 1.5s infinite;
+  }
+
+  @keyframes loading {
+    0% {
+      background-position: 200% 0;
+    }
+    100% {
+      background-position: -200% 0;
+    }
+  }
+
+  .event-card img[src] {
+    animation: none;
+    background: none;
+  }
+
+  /* Melhoria nos badges sobrepostos */
+  .event-card .absolute.top-3 {
+    z-index: 10;
+  }
+
+  /* Efeito glassmorphism aprimorado */
+  .backdrop-blur-sm {
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+  }
+
+  /* Sombras mais suaves para badges */
+  .shadow-lg {
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+  }
+
+  /* Transições suaves para todos os elementos interativos */
+  .event-card * {
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  /* Efeito de hover no card completo */
+  .event-card:hover {
+    transform: translateY(-4px) scale(1.02);
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.15);
+  }
+
+  /* Melhorias no hero da página principal */
+  .event-tabs-header img {
+    filter: brightness(0.9) contrast(1.1);
+  }
+
+  .event-tabs-header:hover img {
+    filter: brightness(1) contrast(1.2);
+    transform: scale(1.05);
+  }
+
+  /* Gradientes mais suaves */
+  .bg-gradient-to-t {
+    background: linear-gradient(to top, rgba(0,0,0,0.8) 0%, rgba(0,0,0,0.4) 50%, transparent 100%);
+  }
+
+  /* Efeito de parallax sutil */
+  @media (prefers-reduced-motion: no-preference) {
+    .event-tabs-header {
+      overflow: hidden;
+    }
+    
+    .event-tabs-header img {
+      transform-origin: center;
+      will-change: transform;
+    }
+  }
+
+  /* Melhorias específicas para imagens dos eventos */
+  .event-card img {
+    object-position: center;
+    will-change: transform;
+  }
+
+  .event-card:hover img {
+    filter: brightness(1.1) contrast(1.05) saturate(1.1);
+  }
+
+  /* Gradientes otimizados para cada categoria */
+  .bg-gradient-to-t.from-purple-500 {
+    background: linear-gradient(to top, rgba(147, 51, 234, 0.3), rgba(236, 72, 153, 0.2), transparent);
+  }
+
+  .bg-gradient-to-t.from-blue-400 {
+    background: linear-gradient(to top, rgba(59, 130, 246, 0.3), rgba(96, 165, 250, 0.2), transparent);
+  }
+
+  .bg-gradient-to-t.from-amber-400 {
+    background: linear-gradient(to top, rgba(251, 191, 36, 0.3), rgba(245, 158, 11, 0.2), transparent);
+  }
+
+  .bg-gradient-to-t.from-green-400 {
+    background: linear-gradient(to top, rgba(34, 197, 94, 0.3), rgba(16, 185, 129, 0.2), transparent);
+  }
+
+  /* Efeito de shimmer para loading de imagens */
+  @keyframes shimmer {
+    0% {
+      background-position: -200% 0;
+    }
+    100% {
+      background-position: 200% 0;
+    }
+  }
+
+  .event-card img:not([src]) {
+    background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+    background-size: 200% 100%;
+    animation: shimmer 1.5s infinite;
+  }
+
+  /* Melhorias no hero principal */
+  .event-tabs-header img {
+    filter: brightness(0.85) contrast(1.15) saturate(1.1);
+    transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .event-tabs-header:hover img {
+    filter: brightness(1) contrast(1.2) saturate(1.2);
+    transform: scale(1.02);
+  }
+
+  /* Efeito de vinheta sutil nas imagens */
+  .event-card .relative::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: radial-gradient(circle at center, transparent 0%, rgba(0,0,0,0.1) 100%);
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+  }
+
+  .event-card:hover .relative::after {
+    opacity: 1;
+  }
+
+  /* Otimizações para performance */
+  .event-card img {
+    transform: translateZ(0);
+    backface-visibility: hidden;
+  }
+}
