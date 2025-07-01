@@ -77,7 +77,7 @@ eventsApp/
 ## 🛠️ Instalação e Execução
 
 ### **Pré-requisitos**
-- Node.js 18+
+- Node.js 18+ 
 - PostgreSQL 15+
 - npm ou yarn
 
@@ -121,24 +121,54 @@ Acesse: `http://localhost:5173`
 
 ## 🗄️ Banco de Dados
 
-O projeto utiliza PostgreSQL com as seguintes tabelas principais:
+### Supabase (Remoto) - ✅ ATIVO
+O projeto utiliza **Supabase** como banco de dados principal em produção:
 
-- **events** - Eventos do sistema
-- **event_categories** - Categorias de eventos
-- **user_profiles** - Perfis de usuários
-- **event_news** - Notícias relacionadas a eventos
+- **URL**: `https://sxfybutceyadvuasoerp.supabase.co`
+- **Banco**: PostgreSQL na nuvem
+- **Schema**: Completo com 11 tabelas + ENUMs
+- **Dados**: Populado com eventos e notícias de exemplo
 
-### **Scripts Úteis**
+#### Tabelas Principais:
+- `events` - Eventos do portal
+- `event_categories` - Categorias dos eventos  
+- `users` - Usuários e administradores
+- `news_articles` - Notícias e artigos
+- `media` - Mídias dos eventos
+- `comments` - Sistema de comentários
+- `likes` - Sistema de curtidas
+- `user_event_interactions` - Interações usuário-evento
+- `notifications` - Sistema de notificações
+- `system_settings` - Configurações do sistema
+- `audit_logs` - Logs de auditoria
+
+#### Dados Atuais:
+- ✅ **8 categorias** de eventos configuradas
+- ✅ **6 eventos** de exemplo (Festival de Inverno, shows, etc.)
+- ✅ **4 notícias** relacionadas aos eventos
+- ✅ **1 usuário admin** configurado
+- ✅ **Configurações do sistema** definidas
+
+### PostgreSQL Local (Desenvolvimento)
+Para desenvolvimento local, você pode usar:
+
+## ⚙️ Configuração do Banco
+
+### Opção 1: Supabase (Recomendado)
+O projeto já está configurado para usar Supabase:
+
 ```bash
-# Criar eventos de teste
-node create-sample-data.js
-
-# Verificar conexão
-node test-connection.js
-
-# Setup completo
-.\database\scripts\setup_local.ps1
+# As credenciais já estão configuradas em src/lib/database.js
+# Nenhuma configuração adicional necessária
+npm run dev
 ```
+
+### Opção 2: PostgreSQL Local
+Para usar banco local durante desenvolvimento:
+
+1. Configure PostgreSQL local
+2. Execute as migrations em `database/migrations/`
+3. Atualize `src/lib/database.js` com suas credenciais locais
 
 ## 🎨 Principais Eventos Contemplados
 

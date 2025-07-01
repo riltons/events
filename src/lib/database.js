@@ -2,82 +2,209 @@
 // Portal de Eventos Garanhuns
 // NOTA: Em produção, use uma API backend ao invés de conexão direta
 
-// Configurações do banco local
-export const DB_CONFIG = {
-  host: 'localhost',
-  port: 5432,
-  database: 'eventos_garanhuns_dev',
-  user: 'postgres',
-  password: 'postgres123',
-  connectionString: 'postgresql://postgres:postgres123@localhost:5432/eventos_garanhuns_dev'
-};
+// Configurações do Supabase Remoto
+// Portal de Eventos Garanhuns
 
-// Função para testar conexão (apenas para desenvolvimento)
-export async function testDatabaseConnection() {
+import { createClient } from '@supabase/supabase-js'
+
+// Configurações do Supabase remoto
+const supabaseUrl = 'https://sxfybutceyadvuasoerp.supabase.co'
+const supabaseAnonKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InN4ZnlidXRjZXlhZHZ1YXNvZXJwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTEyMDgwMDgsImV4cCI6MjA2Njc4NDAwOH0.OqTIfBrK1qvKQX1PoUOrYIhgRaGNMhq5Z6TM-LgSs50'
+
+// Criar cliente Supabase
+export const supabase = createClient(supabaseUrl, supabaseAnonKey)
+
+// Função para buscar eventos
+export async function getEvents() {
   try {
-    // Em um ambiente real, isso seria uma chamada para sua API backend
-    const response = await fetch('/api/test-connection');
-    const result = await response.json();
-    
-    console.log('🔄 Testando conexão via API...');
-    if (result.success) {
-      console.log('✅ API conectada ao banco com sucesso!');
-      return { success: true, data: result };
-    } else {
-      throw new Error(result.error);
+    const { data, error } = await supabase
+      .from('events')
+      .select(`
+        *,
+        event_categories (
+          name,
+          slug,
+          color,
+          icon
+        )
+      `)
+      .eq('status', 'published')
+      .order('start_date', { ascending: true })
+
+    if (error) {
+      console.error('Erro ao buscar eventos:', error)
+      return []
     }
-  } catch (error) {
-    console.error('❌ Erro na conexão:', error);
-    return { success: false, error: error.message };
+
+    return data || []
+  } catch (err) {
+    console.error('Erro na consulta de eventos:', err)
+    return []
   }
 }
 
-// Simulação de funções que você usaria com uma API backend
-export const eventService = {
-  // Listar eventos
-  async getEvents(filters = {}) {
-    // Em produção: fetch('/api/events', { params: filters })
-    console.log('📋 Buscando eventos...', filters);
-    return mockEvents;
-  },
-  
-  // Buscar evento por slug
-  async getEventBySlug(slug) {
-    // Em produção: fetch(`/api/events/${slug}`)
-    console.log(`🔍 Buscando evento: ${slug}`);
-    return mockEvents.find(event => event.slug === slug);
-  },
-  
-  // Listar categorias
-  async getCategories() {
-    // Em produção: fetch('/api/categories')
-    console.log('🏷️ Buscando categorias...');
-    return mockCategories;
+// Função para buscar eventos da semana
+export async function getEventosSemanais() {
+  try {
+    const agora = new Date()
+    const proximoDomingo = new Date(agora)
+    proximoDomingo.setDate(agora.getDate() + (7 - agora.getDay()))
+    proximoDomingo.setHours(23, 59, 59, 999)
+
+    const { data, error } = await supabase
+      .from('events')
+      .select(`
+        *,
+        event_categories (
+          name,
+          slug,
+          color,
+          icon
+        )
+      `)
+      .eq('status', 'published')
+      .gte('start_date', agora.toISOString())
+      .lte('start_date', proximoDomingo.toISOString())
+      .order('start_date', { ascending: true })
+
+    if (error) {
+      console.error('Erro ao buscar eventos semanais:', error)
+      return []
+    }
+
+    return data || []
+  } catch (err) {
+    console.error('Erro na consulta de eventos semanais:', err)
+    return []
   }
-};
+}
 
-// Dados mock para desenvolvimento (substitua por calls da API)
-const mockEvents = [
-  {
-    id: '1',
-    title: 'Festival de Forró de Garanhuns 2025',
-    slug: 'festival-forro-garanhuns-2025',
-    description: 'O maior festival de forró do agreste pernambucano',
-    event_type: 'musical',
-    category_id: 'forro',
-    start_date: new Date('2025-07-15'),
-    end_date: new Date('2025-07-20'),
-    venue_name: 'Parque Ruber van der Linden',
-    is_featured: true,
-    status: 'published'
+// Função para buscar eventos em destaque
+export async function getEventosDestaque() {
+  try {
+    const { data, error } = await supabase
+      .from('events')
+      .select(`
+        *,
+        event_categories (
+          name,
+          slug,
+          color,
+          icon
+        )
+      `)
+      .eq('status', 'published')
+      .eq('is_featured', true)
+      .order('start_date', { ascending: true })
+      .limit(6)
+
+    if (error) {
+      console.error('Erro ao buscar eventos em destaque:', error)
+      return []
+    }
+
+    return data || []
+  } catch (err) {
+    console.error('Erro na consulta de eventos em destaque:', err)
+    return []
   }
-];
+}
 
-const mockCategories = [
-  { id: '1', name: 'Musical', slug: 'musical', color: '#FF6B35' },
-  { id: '2', name: 'Forró', slug: 'forro', color: '#FFB347', parent_id: '1' },
-  { id: '3', name: 'Cultural', slug: 'cultural', color: '#45B7D1' },
-  { id: '4', name: 'Religioso', slug: 'religioso', color: '#4ECDC4' }
-];
+// Função para buscar categorias
+export async function getCategorias() {
+  try {
+    const { data, error } = await supabase
+      .from('event_categories')
+      .select('*')
+      .eq('is_active', true)
+      .order('sort_order', { ascending: true })
 
-export default { DB_CONFIG, testDatabaseConnection, eventService }; 
+    if (error) {
+      console.error('Erro ao buscar categorias:', error)
+      return []
+    }
+
+    return data || []
+  } catch (err) {
+    console.error('Erro na consulta de categorias:', err)
+    return []
+  }
+}
+
+// Função para buscar notícias
+export async function getNoticias() {
+  try {
+    const { data, error } = await supabase
+      .from('news_articles')
+      .select('*')
+      .eq('status', 'published')
+      .order('published_at', { ascending: false })
+      .limit(10)
+
+    if (error) {
+      console.error('Erro ao buscar notícias:', error)
+      return []
+    }
+
+    return data || []
+  } catch (err) {
+    console.error('Erro na consulta de notícias:', err)
+    return []
+  }
+}
+
+// Função para buscar evento por ID
+export async function getEventById(id) {
+  try {
+    const { data, error } = await supabase
+      .from('events')
+      .select(`
+        *,
+        event_categories (
+          name,
+          slug,
+          color,
+          icon
+        )
+      `)
+      .eq('id', id)
+      .eq('status', 'published')
+      .single()
+
+    if (error) {
+      console.error('Erro ao buscar evento por ID:', error)
+      return null
+    }
+
+    return data
+  } catch (err) {
+    console.error('Erro na consulta de evento por ID:', err)
+    return null
+  }
+}
+
+// Função de fallback (dados mockados para desenvolvimento)
+export function getFallbackEvents() {
+  return [
+    {
+      id: 'fallback-1',
+      title: 'Conectando com Supabase...',
+      short_description: 'Carregando eventos do banco de dados remoto...',
+      start_date: new Date().toISOString(),
+      venue_name: 'Configurando conexão...',
+      is_free: true,
+      status: 'published',
+      event_categories: {
+        name: 'Sistema',
+        color: '#6366f1'
+      }
+    }
+  ]
+}
+
+// Log de configuração
+console.log('🔗 Database.js configurado para Supabase remoto')
+console.log('📡 URL:', supabaseUrl)
+console.log('✅ Cliente Supabase inicializado')
+
+export default supabase 

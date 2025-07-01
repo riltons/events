@@ -1,17 +1,16 @@
 import React, { useState, useEffect, useMemo } from 'react'
-import { Calendar, MapPin, Clock, Search, Filter, Star, Music, Utensils, Heart, Sparkles, Camera, Image, Users, Info, Navigation, Phone, Newspaper, Play, AlertCircle, Bell, Menu, X, Briefcase, ArrowRight, Database, Building, Ticket, MessageCircle, Mail, Shirt, ChevronDown } from 'lucide-react'
-import { Button } from './components/ui/button'
-import { Input } from './components/ui/input'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from './components/ui/card'
-import { Badge } from './components/ui/badge'
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from './components/ui/dialog'
-// Hooks da API
-import { useEvents, useCategories, useApiHealth, useFixedEvent, useEventNews, useAllNews } from './hooks/useEvents'
-import api from './services/api'
-import { NewsCarousel } from './components/NewsCarousel'
-import NotificationSystem from './components/NotificationSystem'
-import TestPage from './TestPage'
 import './App.css'
+import './index.css'
+import { Card, CardContent, CardHeader, CardTitle } from './components/ui/card'
+import { Button } from './components/ui/button'
+import { Badge } from './components/ui/badge'
+import { Input } from './components/ui/input'
+// Substituindo imports de API local pelos do Supabase
+import { getEvents, getEventosDestaque, getCategorias, getNoticias, getEventosSemanais } from './lib/database'
+import { Calendar, MapPin, Clock, Users, Star, Ticket, Navigation, Phone, Globe, Instagram, Facebook, Share2, Heart, Eye, Timer, ArrowLeft, ArrowRight, Camera, MessageCircle, ThumbsUp, MapIcon, Wifi, AccessibilityIcon, Car, Music, DollarSign, Search, Filter, X, Menu, Database, Newspaper, ChevronDown, ChevronUp, ChevronLeft, ChevronRight, Bell, Play, Pause, CheckCircle, ExternalLink, Utensils, Sparkles, Info, AlertCircle } from 'lucide-react'
+import TestPage from './TestPage'
+import NotificationSystem from './components/NotificationSystem'
+import { NewsCarousel } from './components/NewsCarousel'
 
 // Estilos CSS para corrigir z-index e posicionamento
 const stickyStyles = `
@@ -132,21 +131,70 @@ const adaptEventFromApi = (apiEvent) => {
 };
 
 function App() {
-  // Hook para buscar notícias gerais do banco de dados
-  const { news: noticiasApi, loading: noticiasGeraisLoading, error: noticiasGeraisError } = useAllNews({ limit: 20 });
+  // Estados para dados do Supabase
+  const [eventos, setEventos] = useState([])
+  const [categorias, setCategorias] = useState([])
+  const [noticias, setNoticias] = useState([])
+  const [noticiasData, setNoticiasData] = useState([])
+  const [loading, setLoading] = useState(true)
+  const [apiStatus, setApiStatus] = useState({ isOnline: true })
+  const [eventoFixado, setEventoFixado] = useState(null)
 
-  // Adaptar notícias da API para o formato do frontend
-  const noticiasData = useMemo(() => {
-    return noticiasApi.map(noticia => ({
-      id: noticia.id,
-      titulo: noticia.title,
-      resumo: noticia.summary || noticia.content?.substring(0, 150) + '...',
-      data: noticia.published_at,
-      categoria: noticia.category_name || 'Geral',
-      autor: noticia.author_name,
-      destaque: noticia.is_featured
-    }));
-  }, [noticiasApi]);
+  // Carregar dados do Supabase
+  useEffect(() => {
+    async function carregarDados() {
+      try {
+        setLoading(true)
+        
+        // Carregar dados em paralelo
+        const [eventosData, categoriasData, noticiasData] = await Promise.all([
+          getEvents(),
+          getCategorias(),
+          getNoticias()
+        ])
+        
+        // Adaptar eventos
+        const eventosAdaptados = eventosData.map(adaptEventFromApi).filter(Boolean)
+        setEventos(eventosAdaptados)
+        
+        // Encontrar evento fixado
+        const eventoFixadoEncontrado = eventosData.find(e => e.fixado)
+        if (eventoFixadoEncontrado) {
+          setEventoFixado(adaptEventFromApi(eventoFixadoEncontrado))
+        }
+        
+        // Adaptar categorias
+        const categoriasAdaptadas = categoriasData.map(cat => ({
+          id: cat.slug,
+          nome: cat.name,
+          cor: cat.color || '#FF6B35',
+          icone: cat.name.toLowerCase()
+        }))
+        setCategorias(categoriasAdaptadas)
+        
+        // Adaptar notícias
+        const noticiasAdaptadas = noticiasData.map(noticia => ({
+          id: noticia.id,
+          titulo: noticia.title,
+          resumo: noticia.excerpt || noticia.content?.substring(0, 150) + '...',
+          data: noticia.published_at,
+          categoria: noticia.category || 'Geral',
+          autor: 'Portal Eventos',
+          destaque: noticia.is_featured
+        }))
+        setNoticiasData(noticiasAdaptadas)
+        
+        setApiStatus({ isOnline: true })
+      } catch (error) {
+        console.error('Erro ao carregar dados:', error)
+        setApiStatus({ isOnline: false })
+      } finally {
+        setLoading(false)
+      }
+    }
+
+    carregarDados()
+  }, [])
   // Estados da aplicação
   const [filtroCategoria, setFiltroCategoria] = useState('todos')
   const [filtroTipo, setFiltroTipo] = useState('todos')
@@ -166,41 +214,7 @@ function App() {
   const [ordenacao, setOrdenacao] = useState('mais-recentes')
   const [noticiaDestaque, setNoticiaDestaque] = useState(null)
 
-  // Hooks da API
-  const apiFilters = useMemo(() => ({
-    category: filtroCategoria !== 'todos' ? filtroCategoria : undefined,
-    search: busca || undefined,
-    limit: 50 // Carregar mais eventos para ter variedade
-  }), [filtroCategoria, busca]);
-  
-  const { events: apiEvents, loading: eventsLoading, error: eventsError } = useEvents(apiFilters);
-  const { categories: apiCategories } = useCategories();
-  const apiStatus = useApiHealth();
-  const { event: eventoFixado, loading: eventoFixadoLoading } = useFixedEvent();
-  
-  // Hook para notícias do evento fixado (buscar notícias em destaque primeiro)
-  const { news: noticiasEventoFixado, loading: noticiasLoading } = useEventNews(
-    eventoFixado?.slug, 
-    { limit: 10, featuredOnly: false } // Buscar todas, mas processar corretamente no frontend
-  );
 
-  // Adaptar eventos da API para o formato do App
-  const eventos = useMemo(() => {
-    return apiEvents.map(adaptEventFromApi).filter(Boolean);
-  }, [apiEvents]);
-
-  // Adaptar categorias da API  
-  const categorias = useMemo(() => {
-    const cats = apiCategories
-      .filter(cat => !cat.parent_id) // Apenas categorias principais
-      .map(cat => ({
-        id: cat.slug,
-        nome: cat.name,
-        cor: cat.color || '#FF6B35',
-        icone: cat.name.toLowerCase()
-      }));
-    return cats;
-  }, [apiCategories]);
 
   // Estado do evento em destaque (baseado nos dados reais)
   const [eventoDestaque, setEventoDestaque] = useState(null);
@@ -297,38 +311,25 @@ function App() {
   };
 
   useEffect(() => {
-    if (eventoFixado && !eventoFixadoLoading) {
-      // Usar evento fixado da API se disponível
-      const eventoFormatado = adaptEventFromApi(eventoFixado);
-      if (eventoFormatado) {
-        const noticiasProcessadas = noticiasEventoFixado?.map(noticia => ({
-          id: noticia.id,
-          titulo: noticia.title,
-          resumo: noticia.summary || noticia.content?.substring(0, 150) + '...',
-          autor: noticia.author_name,
-          tempo: formatarTempoRelativo(noticia.published_at),
-          categoria: eventoFormatado.categoria,
-          destaque: noticia.is_featured,
-          data: noticia.published_at // Campo necessário para o NewsCarousel
-        })) || [];
-
-        setEventoDestaque({
-          ...eventoFormatado,
-          statusAtual: getStatusEvento(eventoFormatado),
-          noticias: noticiasProcessadas
-        });
-      }
-    } else if (eventos.length > 0 && !eventoFixado) {
+    if (eventoFixado) {
+      // Usar evento fixado se disponível
+      setEventoDestaque({
+        ...eventoFixado,
+        statusAtual: getStatusEvento(eventoFixado),
+        noticias: noticiasData.slice(0, 3) // Usar as primeiras 3 notícias
+      });
+    } else if (eventos.length > 0) {
       // Fallback para getProximoEvento se não houver evento fixado
       const eventoAtual = getProximoEvento(eventos);
-    if (eventoAtual) {
-      setEventoDestaque({
-        ...eventoAtual,
-        statusAtual: getStatusEvento(eventoAtual)
+      if (eventoAtual) {
+        setEventoDestaque({
+          ...eventoAtual,
+          statusAtual: getStatusEvento(eventoAtual),
+          noticias: noticiasData.slice(0, 3)
         });
       }
     }
-  }, [eventos, eventoFixado, eventoFixadoLoading, noticiasEventoFixado]);
+  }, [eventos, eventoFixado, noticiasData]);
 
 
 
@@ -668,13 +669,13 @@ function App() {
   const getStatusBadge = (status) => {
     switch (status) {
       case 'em_andamento':
-        return <Badge className="bg-green-500 text-white animate-pulse px-2 py-1 text-xs font-semibold mb-6 inline-block">🔴 AO VIVO</Badge>
+        return <Badge variant="default" className="bg-green-500 text-white animate-pulse px-2 py-1 text-xs font-semibold mb-6 inline-block">🔴 AO VIVO</Badge>
       case 'programado':
-        return <Badge className="bg-blue-500 text-white px-2 py-1 text-xs font-semibold mb-6 inline-block">📅 PROGRAMADO</Badge>
+        return <Badge variant="default" className="bg-blue-500 text-white px-2 py-1 text-xs font-semibold mb-6 inline-block">📅 PROGRAMADO</Badge>
       case 'finalizado':
-        return <Badge className="bg-gray-500 text-white px-2 py-1 text-xs font-semibold mb-6 inline-block">✅ FINALIZADO</Badge>
+        return <Badge variant="default" className="bg-gray-500 text-white px-2 py-1 text-xs font-semibold mb-6 inline-block">✅ FINALIZADO</Badge>
       default:
-        return <Badge className="px-2 py-1 text-xs font-semibold mb-6 inline-block">📋 EVENTO</Badge>
+        return <Badge variant="default" className="px-2 py-1 text-xs font-semibold mb-6 inline-block">📋 EVENTO</Badge>
     }
   }
 
@@ -708,9 +709,9 @@ function App() {
   }).sort((a, b) => {
     switch (ordenacao) {
       case 'mais-recentes':
-        return new Date(b.data) - new Date(a.data)
+        return new Date(b.data).getTime() - new Date(a.data).getTime()
       case 'mais-antigos':
-        return new Date(a.data) - new Date(b.data)
+        return new Date(a.data).getTime() - new Date(b.data).getTime()
       case 'alfabetico':
         return a.titulo.localeCompare(b.titulo)
       case 'categoria':
@@ -910,14 +911,15 @@ function App() {
                         alt={noticia.titulo}
                         className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
                         onError={(e) => {
-                          e.target.src = getFallbackImage(400, 250)
+                          const target = e.target as HTMLImageElement;
+                          target.src = getFallbackImage(400, 250)
                         }}
                       />
                       <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent"></div>
                       
                       {/* Badge de categoria */}
                       <div className="absolute top-4 left-4">
-                        <Badge className={`${getCategoriaColor(noticia.categoria)} px-3 py-1 text-xs font-bold rounded-lg shadow-lg`}>
+                        <Badge variant="default" className={`${getCategoriaColor(noticia.categoria)} px-3 py-1 text-xs font-bold rounded-lg shadow-lg`}>
                           {noticia.categoria}
                         </Badge>
                       </div>
@@ -925,7 +927,7 @@ function App() {
                       {/* Badge de destaque */}
                       {noticia.destaque && (
                         <div className="absolute top-4 right-4">
-                          <Badge className="bg-red-500 text-white animate-pulse px-3 py-1 text-xs font-bold rounded-lg shadow-lg">
+                          <Badge variant="default" className="bg-red-500 text-white animate-pulse px-3 py-1 text-xs font-bold rounded-lg shadow-lg">
                             ⭐ DESTAQUE
                           </Badge>
                         </div>

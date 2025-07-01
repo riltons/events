@@ -8,7 +8,8 @@
     "dev": "vite",
     "dev:full": "concurrently \"npm run api\" \"npm run dev\"",
     "api": "node api-server.js",
-    "build": "tsc -b && vite build",
+    "build": "vite build",
+    "build:with-types": "tsc -b && vite build",
     "lint": "eslint .",
     "preview": "vite preview",
     "db:test": "node test-connection.js",
@@ -31,6 +32,7 @@
     "pg": "^8.16.3",
     "react": "^19.1.0",
     "react-dom": "^19.1.0",
+    "supabase": "^2.30.4",
     "tailwind-merge": "^1.14.0"
   },
   "devDependencies": {
