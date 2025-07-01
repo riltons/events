@@ -1422,10 +1422,10 @@ function App() {
           <div className="absolute inset-0 hero-gradient opacity-80"></div>
         </div>
         
-        <div className="container mx-auto px-4 relative z-10">
+        <div className="container mx-auto px-2 sm:px-4 relative z-10">
           <div className="text-center mb-8">
             {getStatusBadge(eventoDestaque.statusAtual)}
-            <h2 className="text-5xl font-bold mb-4 font-display drop-shadow-lg">{eventoDestaque.titulo}</h2>
+            <h2 className="text-xl sm:text-3xl md:text-5xl font-bold mb-4 font-display drop-shadow-lg">{eventoDestaque.titulo}</h2>
             {/* Texto extenso - oculto em mobile */}
             <p className="text-xl mb-6 max-w-3xl mx-auto drop-shadow-md hidden md:block">{eventoDestaque.descricao}</p>
             
@@ -1461,7 +1461,7 @@ function App() {
           
           {/* Carrossel de Notícias */}
           {eventoDestaque?.noticias && eventoDestaque.noticias.length > 0 && (
-            <div className="px-4">
+            <div className="px-2 sm:px-4">
               <NewsCarousel 
                 noticias={eventoDestaque.noticias}
                 autoPlay={true}
@@ -1481,7 +1481,7 @@ function App() {
           <section className="py-12 bg-muted/10">
             <div className="container mx-auto px-1 sm:px-6">
               <div className="text-center mb-8">
-                <h3 className="text-3xl font-bold font-display mb-3">Eventos da Semana</h3>
+                <h3 className="text-xl sm:text-2xl md:text-3xl font-bold font-display mb-3">Eventos da Semana</h3>
                 <p className="text-muted-foreground text-lg">Descubra os eventos programados desde hoje até domingo</p>
               </div>
           
@@ -1602,7 +1602,7 @@ function App() {
 
       {/* Container do Evento em Destaque */}
       {eventoDestaque && (
-      <div className="event-detail-container bg-white rounded-xl p-3 sm:p-8 mx-2 sm:mx-6 mb-6 sm:mb-8 relative border-2 border-gray-200 shadow-lg">
+      <div className="event-detail-container bg-white rounded-xl p-3 sm:p-8 mx-1 sm:mx-6 mb-6 sm:mb-8 relative border-2 border-gray-200 shadow-lg">
         {/* Badge de Destaque */}
         <div className="absolute -top-3 left-4 bg-gradient-to-r from-orange-500 to-red-500 text-white px-4 py-1 rounded-full text-sm font-bold shadow-lg z-10">
           ⭐ EVENTO EM DESTAQUE
@@ -1624,7 +1624,7 @@ function App() {
             
             {/* Conteúdo sobreposto na imagem */}
             <div className="absolute inset-0 flex items-center justify-center">
-              <div className="text-center space-y-3 sm:space-y-6 px-4 sm:px-6">
+              <div className="text-center space-y-3 sm:space-y-6 px-2 sm:px-6">
                 {/* Título Principal com Visual Aprimorado */}
                 <div className="relative">
                   <div className="text-center mb-2 sm:mb-4">
