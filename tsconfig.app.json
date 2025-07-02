@@ -15,14 +15,14 @@
     "noEmit": true,
     "jsx": "react-jsx",
 
-    /* Linting - Relaxed for development */
-    "strict": false,
-    "noUnusedLocals": false,
-    "noUnusedParameters": false,
-    "noFallthroughCasesInSwitch": false,
+    /* Linting - Strict mode enabled as per .cursorrules */
+    "strict": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "noFallthroughCasesInSwitch": true,
     "noUncheckedSideEffectImports": false,
-    "noImplicitAny": false,
-    "allowJs": true
+    "noImplicitAny": true,
+    "allowJs": false
   },
   "include": ["src"]
 }

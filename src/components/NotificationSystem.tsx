@@ -1,12 +1,53 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useCallback, useMemo } from 'react'
 import { Button } from './ui/button'
 import { Badge } from './ui/badge'
 import { Card, CardContent, CardHeader, CardTitle } from './ui/card'
 import { Bell, X, Clock, MapPin, Calendar } from 'lucide-react'
 
-export const NotificationSystem = ({ eventos, eventosFavoritos }) => {
-  const [notificacoes, setNotificacoes] = useState([])
-  const [mostrarNotificacoes, setMostrarNotificacoes] = useState(false)
+/**
+ * Representa um evento no sistema
+ */
+interface Evento {
+  id: string | number
+  titulo: string
+  data: string
+  horario?: string
+  local: string
+  categoria?: string
+}
+
+/**
+ * Representa uma notificação do sistema
+ */
+interface Notificacao {
+  id: string
+  tipo: 'evento_proximo' | 'evento_atualizado' | 'evento_cancelado'
+  titulo: string
+  mensagem: string
+  evento?: Evento
+  timestamp: Date
+  lida: boolean
+}
+
+/**
+ * Propriedades do componente NotificationSystem
+ */
+interface NotificationSystemProps {
+  /** Array de eventos disponíveis */
+  eventos: Evento[]
+  /** Set com IDs dos eventos favoritos */
+  eventosFavoritos: Set<string | number>
+}
+
+/**
+ * Sistema de notificações para eventos favoritos
+ * 
+ * @param props - Propriedades do componente
+ * @returns Componente JSX do sistema de notificações
+ */
+export const NotificationSystem = ({ eventos, eventosFavoritos }: NotificationSystemProps): JSX.Element => {
+  const [notificacoes, setNotificacoes] = useState<Notificacao[]>([])
+  const [mostrarNotificacoes, setMostrarNotificacoes] = useState<boolean>(false)
 
   // Verificar eventos favoritos próximos
   useEffect(() => {

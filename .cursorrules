@@ -1,0 +1,83 @@
+Frontend (React 18 + TypeScript + Vite + Tailwind + Shadcn/ui + Lucide):
+
+text
+---
+description: Regras para desenvolvimento frontend com React 18, TypeScript, Vite, Tailwind CSS e Shadcn/ui.
+globs:
+  - src/**/*.tsx
+  - src/**/*.ts
+  - src/components/**
+  - src/hooks/**
+alwaysApply: false
+---
+
+## Convenções Gerais
+- Use **componentes funcionais** e hooks; evite classes[2][6].
+- Sempre tipar props e estados explicitamente.
+- Siga a estrutura de pastas: componentes reutilizáveis em `components/`, hooks customizados em `hooks/`, utilitários em `lib/`, dados mock em `data/`, serviços de API em `services/`[2].
+- Componentes base (Shadcn/ui) devem ficar em `components/ui/`.
+
+## Styling
+- Utilize **Tailwind CSS** para todo o styling, seguindo abordagem mobile-first[1][6].
+- Evite CSS inline e arquivos CSS separados, exceto para tokens globais.
+- Prefira composição de classes utilitárias e evite duplicidade de estilos.
+- Utilize componentes Shadcn/ui como base para UI e siga o padrão de customização recomendado pela biblioteca[6].
+- Ícones devem ser importados exclusivamente de Lucide React.
+
+## Boas Práticas de Código
+- Ative todas as opções de checagem estrita no `tsconfig.json` (`"strict": true`, `"noImplicitAny": true`, etc.)[2].
+- Documente funções e hooks complexos com comentários JSDoc.
+- Separe lógica de negócio da UI: utilize hooks para lógica e componentes para apresentação.
+- Prefira composição e reutilização de componentes.
+- Use `useCallback` e `useMemo` para otimizar performance quando necessário.
+- Nomeie arquivos de componentes em PascalCase e hooks em camelCase (`useNomeDoHook`).
+
+## Padrões de Design
+- Siga Atomic Design para criação e organização de componentes.
+- Evite lógica de negócio nos componentes de UI.
+- Use o padrão de containers para componentes que lidam com dados e lógica.
+- Componentes devem ser pequenos, focados e reutilizáveis.
+
+## Testes
+- Implemente testes unitários para hooks e componentes críticos.
+- Prefira bibliotecas como Testing Library e Vitest.
+
+## Acessibilidade
+- Garanta que todos os componentes sejam acessíveis (uso correto de ARIA, navegação por teclado).
+
+## O que evitar
+- Não utilize funções anônimas diretamente em props.
+- Evite duplicação de código e lógica.
+- Não use bibliotecas ou frameworks não definidos nesta stack.
+
+Backend/Database (PostgreSQL + Supabase):
+
+text
+---
+description: Regras para scripts SQL e funções PostgreSQL/Supabase.
+globs:
+  - database/**/*.sql
+  - database/scripts/**
+  - database/migrations/**
+  - database/seeds/**
+alwaysApply: false
+---
+
+## Diretrizes Gerais
+- Escreva funções e scripts compatíveis com Supabase/PostgreSQL[3].
+- Sempre utilize `SECURITY INVOKER` por padrão, exceto se for necessário `SECURITY DEFINER` (explique o motivo).
+- Defina `search_path` como vazio e use nomes totalmente qualificados para objetos do banco[3].
+- Prefira funções `IMMUTABLE` ou `STABLE` quando possível para otimização.
+- Documente scripts e funções complexas.
+- Adote padrões de nomenclatura snake_case para tabelas, colunas e funções.
+
+## Migrações
+- Scripts de migração devem ser idempotentes e reversíveis.
+- Separe migrações em arquivos pequenos e descritivos.
+
+## Seeds
+- Seeds devem ser claros, seguros e não sobrescrever dados em produção.
+
+## O que evitar
+- Não escreva queries SQL sem validação de tipos e sem tratamento de erros.
+- Evite side effects desnecessários em funções.
