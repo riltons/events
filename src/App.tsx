@@ -1429,19 +1429,19 @@ function App() {
             {/* Texto extenso - oculto em mobile */}
             <p className="text-xl mb-6 max-w-3xl mx-auto drop-shadow-md hidden md:block">{eventoDestaque.descricao}</p>
             
-            {/* Cards de informações - ocultos em mobile */}
-            <div className="flex flex-wrap justify-center gap-6 text-lg hidden md:flex">
-              <div className="flex items-center gap-2 bg-black/20 backdrop-blur-sm rounded-lg px-3 py-2">
-                <Clock className="w-5 h-5" />
-                <span>{formatarData(eventoDestaque.data, eventoDestaque.dataFim)}</span>
+            {/* Cards de informações - visíveis em mobile com layout adaptado */}
+            <div className="flex flex-wrap justify-center gap-2 sm:gap-6 text-sm sm:text-lg">
+              <div className="flex items-center gap-1 sm:gap-2 bg-black/20 backdrop-blur-sm rounded-lg px-2 sm:px-3 py-1 sm:py-2">
+                <Clock className="w-3 h-3 sm:w-5 sm:h-5" />
+                <span className="text-xs sm:text-base">{formatarData(eventoDestaque.data, eventoDestaque.dataFim)}</span>
               </div>
-              <div className="flex items-center gap-2 bg-black/20 backdrop-blur-sm rounded-lg px-3 py-2">
-                <MapPin className="w-5 h-5" />
-                <span>{eventoDestaque.local}</span>
+              <div className="flex items-center gap-1 sm:gap-2 bg-black/20 backdrop-blur-sm rounded-lg px-2 sm:px-3 py-1 sm:py-2">
+                <MapPin className="w-3 h-3 sm:w-5 sm:h-5" />
+                <span className="text-xs sm:text-base">{eventoDestaque.local}</span>
               </div>
-              <div className="flex items-center gap-2 bg-black/20 backdrop-blur-sm rounded-lg px-3 py-2">
-                <Users className="w-5 h-5" />
-                <span>{eventoDestaque.informacoes?.publico_esperado}</span>
+              <div className="flex items-center gap-1 sm:gap-2 bg-black/20 backdrop-blur-sm rounded-lg px-2 sm:px-3 py-1 sm:py-2">
+                <Users className="w-3 h-3 sm:w-5 sm:h-5" />
+                <span className="text-xs sm:text-base">{eventoDestaque.informacoes?.publico_esperado}</span>
               </div>
             </div>
           </div>
