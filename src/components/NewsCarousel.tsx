@@ -1,5 +1,5 @@
-import React, { useState, useEffect, useCallback, useMemo } from 'react'
-import { Clock, Newspaper, ChevronLeft, ChevronRight } from 'lucide-react'
+import React, { useState, useEffect, useRef, useCallback, useMemo } from 'react'
+import { Clock, Newspaper, ChevronLeft, ChevronRight, Loader2 } from 'lucide-react'
 import { Button } from './ui/button'
 import { Card } from './ui/card'
 import { Badge } from './ui/badge'
@@ -36,9 +36,32 @@ interface NewsCarouselProps {
  */
 export function NewsCarousel({ noticias = [], autoPlay = true, interval = 6000 }: NewsCarouselProps): JSX.Element | null {
   const [currentIndex, setCurrentIndex] = useState<number>(0)
+  const [isUserInteracting, setIsUserInteracting] = useState<boolean>(false)
+  const [isLoading, setIsLoading] = useState<boolean>(true)
+  const carouselRef = useRef<HTMLDivElement>(null)
+  const startTouchX = useRef<number>(0)
+  const currentTouchX = useRef<number>(0)
+  const isDragging = useRef<boolean>(false)
 
   // Usar TODAS as notícias vinculadas ao evento (não filtrar por destaque)
   const noticiasCarrossel = useMemo(() => noticias || [], [noticias])
+
+  // Controle de loading
+  useEffect(() => {
+    // Simular um pequeno delay para verificar se os dados estão chegando
+    const timer = setTimeout(() => {
+      setIsLoading(false)
+    }, 1000)
+
+    return () => clearTimeout(timer)
+  }, [])
+
+  // Resetar loading quando receber notícias
+  useEffect(() => {
+    if (noticiasCarrossel.length > 0) {
+      setIsLoading(false)
+    }
+  }, [noticiasCarrossel.length])
 
   /**
    * Obtém a URL da imagem baseada no título ou categoria da notícia
@@ -76,9 +99,9 @@ export function NewsCarousel({ noticias = [], autoPlay = true, interval = 6000 }
     return 'https://images.unsplash.com/photo-1533174072545-7a4b6ad7a6c3?w=800&h=600&fit=crop&crop=center'
   }, [])
 
-  // Auto-play apenas se há mais de 1 notícia
+  // Auto-play apenas se há mais de 1 notícia e usuário não está interagindo
   useEffect(() => {
-    if (!autoPlay || noticiasCarrossel.length <= 1) return
+    if (!autoPlay || noticiasCarrossel.length <= 1 || isUserInteracting) return
 
     const timer = setInterval(() => {
       setCurrentIndex((prevIndex: number) => 
@@ -87,7 +110,7 @@ export function NewsCarousel({ noticias = [], autoPlay = true, interval = 6000 }
     }, interval)
 
     return () => clearInterval(timer)
-  }, [autoPlay, noticiasCarrossel.length, interval])
+  }, [autoPlay, noticiasCarrossel.length, interval, isUserInteracting])
 
   // Resetar o índice se ele for maior que o número de notícias disponíveis
   useEffect(() => {
@@ -126,6 +149,8 @@ export function NewsCarousel({ noticias = [], autoPlay = true, interval = 6000 }
    */
   const goToIndex = useCallback((index: number) => {
     setCurrentIndex(index)
+    setIsUserInteracting(true)
+    setTimeout(() => setIsUserInteracting(false), 1000)
   }, [])
 
   /**
@@ -137,15 +162,154 @@ export function NewsCarousel({ noticias = [], autoPlay = true, interval = 6000 }
     target.style.display = 'none'
   }, [])
 
-  // Se não há notícias, não renderizar o carrossel
+  // Handlers para touch/swipe em mobile
+  const handleTouchStart = useCallback((e: React.TouchEvent) => {
+    setIsUserInteracting(true)
+    startTouchX.current = e.touches[0].clientX
+    currentTouchX.current = e.touches[0].clientX
+    isDragging.current = false
+  }, [])
+
+  const handleTouchMove = useCallback((e: React.TouchEvent) => {
+    if (!startTouchX.current) return
+    
+    currentTouchX.current = e.touches[0].clientX
+    const diffX = Math.abs(currentTouchX.current - startTouchX.current)
+    
+    if (diffX > 10) {
+      isDragging.current = true
+      // Previne scroll vertical durante o swipe horizontal
+      e.preventDefault()
+    }
+  }, [])
+
+  const handleTouchEnd = useCallback(() => {
+    if (!startTouchX.current || !isDragging.current) {
+      setIsUserInteracting(false)
+      return
+    }
+
+    const diffX = currentTouchX.current - startTouchX.current
+    const threshold = 50 // Mínimo de pixels para considerar um swipe
+
+    if (Math.abs(diffX) > threshold) {
+      if (diffX > 0) {
+        // Swipe para direita - voltar
+        goToPrevious()
+      } else {
+        // Swipe para esquerda - avançar
+        goToNext()
+      }
+    }
+
+    // Reset dos valores
+    startTouchX.current = 0
+    currentTouchX.current = 0
+    isDragging.current = false
+    
+    // Delay para reativar autoplay
+    setTimeout(() => setIsUserInteracting(false), 1000)
+  }, [goToPrevious, goToNext])
+
+  // Handlers para mouse drag (desktop)
+  const handleMouseDown = useCallback((e: React.MouseEvent) => {
+    setIsUserInteracting(true)
+    startTouchX.current = e.clientX
+    currentTouchX.current = e.clientX
+    isDragging.current = false
+    
+    const handleMouseMove = (e: MouseEvent) => {
+      if (!startTouchX.current) return
+      
+      currentTouchX.current = e.clientX
+      const diffX = Math.abs(currentTouchX.current - startTouchX.current)
+      
+      if (diffX > 10) {
+        isDragging.current = true
+      }
+    }
+
+    const handleMouseUp = () => {
+      if (!startTouchX.current || !isDragging.current) {
+        setIsUserInteracting(false)
+        document.removeEventListener('mousemove', handleMouseMove)
+        document.removeEventListener('mouseup', handleMouseUp)
+        return
+      }
+
+      const diffX = currentTouchX.current - startTouchX.current
+      const threshold = 50
+
+      if (Math.abs(diffX) > threshold) {
+        if (diffX > 0) {
+          goToPrevious()
+        } else {
+          goToNext()
+        }
+      }
+
+      startTouchX.current = 0
+      currentTouchX.current = 0
+      isDragging.current = false
+      setTimeout(() => setIsUserInteracting(false), 1000)
+      
+      document.removeEventListener('mousemove', handleMouseMove)
+      document.removeEventListener('mouseup', handleMouseUp)
+    }
+
+    document.addEventListener('mousemove', handleMouseMove)
+    document.addEventListener('mouseup', handleMouseUp)
+  }, [goToPrevious, goToNext])
+
+
+
+  // Estado de carregamento
+  if (isLoading) {
+    return (
+      <div className="relative">
+        <Card className="border-0 shadow-lg">
+          <div className="min-h-[280px] sm:min-h-[320px] md:h-80 relative overflow-hidden bg-gradient-to-br from-primary/30 to-secondary/30 flex items-center justify-center">
+            <div className="text-center text-white">
+              <Loader2 className="w-8 h-8 animate-spin mx-auto mb-4" />
+              <p className="text-lg font-medium">Carregando notícias...</p>
+            </div>
+          </div>
+        </Card>
+      </div>
+    )
+  }
+
+  // Se não há notícias após o loading, mostrar estado vazio
   if (noticiasCarrossel.length === 0) {
-    return null
+    return (
+      <div className="relative">
+        <Card className="border-0 shadow-lg">
+          <div className="min-h-[280px] sm:min-h-[320px] md:h-80 relative overflow-hidden bg-gradient-to-br from-gray-100 to-gray-200 flex items-center justify-center">
+            <div className="text-center text-gray-600 p-6">
+              <Newspaper className="w-16 h-16 mx-auto mb-4 text-gray-400" />
+              <h3 className="text-xl font-bold mb-2">Nenhuma notícia disponível</h3>
+              <p className="text-gray-500">
+                As notícias sobre este evento serão publicadas em breve.
+              </p>
+            </div>
+          </div>
+        </Card>
+      </div>
+    )
   }
 
   return (
     <div className="relative">
+
       {/* Carrossel Principal */}
-      <div className="overflow-hidden rounded-lg shadow-lg">
+      <div 
+        ref={carouselRef}
+        className="overflow-hidden rounded-lg shadow-lg cursor-grab active:cursor-grabbing"
+        onTouchStart={handleTouchStart}
+        onTouchMove={handleTouchMove}
+        onTouchEnd={handleTouchEnd}
+        onMouseDown={handleMouseDown}
+      >
         <div 
           className="flex transition-transform duration-500 ease-in-out"
           style={{ transform: `translateX(-${currentIndex * 100}%)` }}
@@ -154,8 +318,8 @@ export function NewsCarousel({ noticias = [], autoPlay = true, interval = 6000 }
             <div key={noticia.id || index} className="w-full flex-shrink-0">
               <Card className="border-0 shadow-lg">
                 <div className="relative">
-                  {/* Imagem de fundo */}
-                  <div className="h-64 md:h-80 relative overflow-hidden bg-gradient-to-br from-primary/30 to-secondary/30">
+                  {/* Imagem de fundo com altura adaptativa */}
+                  <div className="min-h-[280px] sm:min-h-[320px] md:h-80 relative overflow-hidden bg-gradient-to-br from-primary/30 to-secondary/30">
                     <img 
                       src={obterImagemNoticia(noticia)}
                       alt={noticia.titulo}
@@ -163,37 +327,42 @@ export function NewsCarousel({ noticias = [], autoPlay = true, interval = 6000 }
                       onError={handleImageError}
                     />
                     {/* Overlay sutil apenas para contraste do texto */}
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent"></div>
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-black/20 to-transparent"></div>
                   </div>
 
-                  {/* Conteúdo sobreposto */}
-                  <div className="absolute inset-0 flex flex-col justify-end p-6 text-white">
-                    <div className="space-y-4">
-                      <div className="flex items-center gap-2">
-                        <Badge className="bg-black/80 text-white border-white/70 backdrop-blur-sm shadow-lg">
+                  {/* Conteúdo sobreposto com melhor adaptação mobile */}
+                  <div className="absolute inset-0 flex flex-col justify-end p-4 sm:p-6 text-white">
+                    <div className="space-y-3 sm:space-y-4">
+                      <div className="flex items-center gap-2 flex-wrap">
+                        <Badge className="bg-black/80 text-white border-white/70 backdrop-blur-sm shadow-lg text-xs">
                           <Clock className="w-3 h-3 mr-1" />
                           {formatarDataCurta(noticia.data)}
                         </Badge>
                         {noticia.destaque && (
-                          <Badge className="bg-red-600 text-white animate-pulse border-red-400 shadow-lg">
+                          <Badge className="bg-red-600 text-white animate-pulse border-red-400 shadow-lg text-xs">
                             ✨ DESTAQUE
                         </Badge>
                         )}
                       </div>
                       
-                      <h3 className="text-2xl md:text-3xl font-bold font-display leading-tight text-white drop-shadow-2xl" style={{textShadow: '2px 2px 4px rgba(0,0,0,0.8)'}}>
+                      {/* Título responsivo com altura automática */}
+                      <h3 className="text-lg sm:text-xl md:text-2xl lg:text-3xl font-bold font-display leading-tight text-white drop-shadow-2xl" 
+                          style={{textShadow: '2px 2px 4px rgba(0,0,0,0.8)'}}>
                         {noticia.titulo}
                       </h3>
                       
-                      <p className="text-lg text-gray-100 max-w-2xl drop-shadow-lg" style={{textShadow: '1px 1px 3px rgba(0,0,0,0.7)'}}>
+                      {/* Resumo responsivo */}
+                      <p className="text-sm sm:text-base md:text-lg text-gray-100 max-w-2xl drop-shadow-lg leading-relaxed" 
+                         style={{textShadow: '1px 1px 3px rgba(0,0,0,0.7)'}}>
                         {noticia.resumo}
                       </p>
 
                       <Button 
                         variant="secondary" 
-                        className="w-fit bg-white/90 hover:bg-white text-gray-900 border-white shadow-lg hover:shadow-xl transition-all duration-200"
+                        className="w-fit bg-white/90 hover:bg-white text-gray-900 border-white shadow-lg hover:shadow-xl transition-all duration-200 text-xs sm:text-sm"
+                        size="sm"
                       >
-                        <Newspaper className="w-4 h-4 mr-2" />
+                        <Newspaper className="w-3 h-3 sm:w-4 sm:h-4 mr-2" />
                         Ler Notícia Completa
                       </Button>
                     </div>
@@ -205,13 +374,13 @@ export function NewsCarousel({ noticias = [], autoPlay = true, interval = 6000 }
         </div>
       </div>
 
-      {/* Controles de Navegação */}
+      {/* Controles de Navegação - Ocultos em mobile */}
       {noticiasCarrossel.length > 1 && (
         <>
           <Button
             variant="outline"
             size="icon"
-            className="absolute left-4 top-1/2 transform -translate-y-1/2 bg-white/90 hover:bg-white border-white/30 z-10"
+            className="absolute left-4 top-1/2 transform -translate-y-1/2 bg-white/90 hover:bg-white border-white/30 z-10 hidden md:flex"
             onClick={goToPrevious}
             aria-label="Notícia anterior"
           >
@@ -221,7 +390,7 @@ export function NewsCarousel({ noticias = [], autoPlay = true, interval = 6000 }
           <Button
             variant="outline"
             size="icon"
-            className="absolute right-4 top-1/2 transform -translate-y-1/2 bg-white/90 hover:bg-white border-white/30 z-10"
+            className="absolute right-4 top-1/2 transform -translate-y-1/2 bg-white/90 hover:bg-white border-white/30 z-10 hidden md:flex"
             onClick={goToNext}
             aria-label="Próxima notícia"
           >
@@ -236,7 +405,7 @@ export function NewsCarousel({ noticias = [], autoPlay = true, interval = 6000 }
           {noticiasCarrossel.map((_, index) => (
             <button
               key={index}
-              className={`w-3 h-3 rounded-full transition-all duration-300 ${
+              className={`w-2 h-2 sm:w-3 sm:h-3 rounded-full transition-all duration-300 ${
                 index === currentIndex 
                   ? 'bg-primary scale-110' 
                   : 'bg-gray-300 hover:bg-gray-400'
@@ -247,6 +416,13 @@ export function NewsCarousel({ noticias = [], autoPlay = true, interval = 6000 }
               aria-label={`Ir para notícia ${index + 1}`}
             />
           ))}
+        </div>
+      )}
+
+      {/* Indicador visual de swipe em mobile */}
+      {noticiasCarrossel.length > 1 && (
+        <div className="block md:hidden text-center mt-3 text-xs text-gray-500">
+          <span>← Arraste para navegar →</span>
         </div>
       )}
     </div>

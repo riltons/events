@@ -10,7 +10,7 @@ import { getEvents, getEventosDestaque, getCategorias, getNoticias, getEventosSe
 import { Calendar, MapPin, Clock, Users, Star, Ticket, Navigation, Phone, Globe, Instagram, Facebook, Share2, Heart, Eye, Timer, ArrowLeft, ArrowRight, Camera, MessageCircle, ThumbsUp, MapIcon, Wifi, AccessibilityIcon, Car, Music, DollarSign, Search, Filter, X, Menu, Database, Newspaper, ChevronDown, ChevronUp, ChevronLeft, ChevronRight, Bell, Play, Pause, CheckCircle, ExternalLink, Utensils, Sparkles, Info, AlertCircle } from 'lucide-react'
 import TestPage from './TestPage'
 import NotificationSystem from './components/NotificationSystem'
-import { NewsCarousel } from './components/NewsCarousel'
+import NewsCarousel from './components/NewsCarousel'
 
 // Estilos CSS para corrigir z-index e posicionamento
 const stickyStyles = `
@@ -113,7 +113,36 @@ const adaptEventFromApi = (apiEvent) => {
       tipo: 'local_principal',
       instrucoes: apiEvent.location_instructions || 'Instruções a definir'
     }],
-    noticias: [],
+    noticias: [
+      // Notícias temporárias para demonstração
+      {
+        id: 1,
+        titulo: `${apiEvent.title} confirma grandes atrações`,
+        resumo: `O evento mais aguardado do ano terá uma programação especial com artistas nacionais e locais.`,
+        data: new Date().toISOString().split('T')[0],
+        categoria: 'Festival',
+        autor: 'Redação Portal',
+        destaque: true
+      },
+      {
+        id: 2,
+        titulo: `Estrutura do ${apiEvent.title} será a maior da história`,
+        resumo: `Investimentos em infraestrutura garantem melhor experiência para o público.`,
+        data: new Date(Date.now() - 86400000).toISOString().split('T')[0], // ontem
+        categoria: 'Festival',
+        autor: 'Redação Portal',
+        destaque: true
+      },
+      {
+        id: 3,
+        titulo: `Ingressos para ${apiEvent.title} já estão disponíveis`,
+        resumo: `Vendas começaram com desconto especial para os primeiros compradores.`,
+        data: new Date(Date.now() - 172800000).toISOString().split('T')[0], // 2 dias atrás
+        categoria: 'Festival',
+        autor: 'Redação Portal',
+        destaque: true
+      }
+    ],
     informacoes: {
       duracao: apiEvent.start_date && apiEvent.end_date ? 
         `${new Date(apiEvent.start_date).toLocaleDateString('pt-BR')} a ${new Date(apiEvent.end_date).toLocaleDateString('pt-BR')}` : 
@@ -316,7 +345,8 @@ function App() {
       setEventoDestaque({
         ...eventoFixado,
         statusAtual: getStatusEvento(eventoFixado),
-        noticias: noticiasData.slice(0, 3) // Usar as primeiras 3 notícias
+        // Priorizar notícias do próprio evento, senão usar noticiasData global
+        noticias: eventoFixado.noticias || noticiasData.slice(0, 3)
       });
     } else if (eventos.length > 0) {
       // Fallback para getProximoEvento se não houver evento fixado
@@ -325,7 +355,8 @@ function App() {
         setEventoDestaque({
           ...eventoAtual,
           statusAtual: getStatusEvento(eventoAtual),
-          noticias: noticiasData.slice(0, 3)
+          // Priorizar notícias do próprio evento, senão usar noticiasData global
+          noticias: eventoAtual.noticias || noticiasData.slice(0, 3)
         });
       }
     }
