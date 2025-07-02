@@ -765,7 +765,7 @@ function App() {
         {/* Hero Section da Página de Notícias */}
         <section className="bg-gradient-to-r from-blue-600 via-purple-600 to-indigo-700 text-white py-16 relative overflow-hidden">
           <div className="absolute inset-0 bg-black/20"></div>
-          <div className="container mx-auto px-4 relative z-10">
+          <div className="container mx-auto px-1 sm:px-4 relative z-10">
             <div className="text-center">
               <h1 className="text-4xl md:text-6xl font-bold mb-4 font-display">
                 Central de Notícias
@@ -793,7 +793,7 @@ function App() {
 
         {/* Barra de Filtros Avançados */}
         <section className="py-8 bg-white shadow-sm border-b">
-          <div className="container mx-auto px-4">
+          <div className="container mx-auto px-1 sm:px-4">
             <div className="bg-white rounded-xl shadow-sm border p-6">
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4 mb-4">
                 {/* Busca */}
@@ -881,7 +881,7 @@ function App() {
 
         {/* Grid de Notícias */}
         <section className="py-12">
-          <div className="container mx-auto px-4">
+          <div className="container mx-auto px-1 sm:px-4">
             {noticiasFiltradas.length === 0 ? (
               <div className="text-center py-16">
                 <Search className="w-16 h-16 text-muted-foreground mx-auto mb-4" />
@@ -1083,7 +1083,7 @@ function App() {
         
         {/* Cabeçalho com z-index corrigido */}
         <header className="header-sticky fixed top-0 w-full bg-white border-b border-border shadow-sm z-[100]">
-          <div className="container mx-auto px-4 sm:px-6 py-4">
+          <div className="container mx-auto px-1 sm:px-6 py-4">
             <div className="flex items-center justify-between">
               <div className="flex items-center space-x-4">
                 <h1 className="text-2xl sm:text-3xl font-bold font-display bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">
@@ -1145,7 +1145,7 @@ function App() {
                 
                 {menuMobileAberto && (
                   <div className="absolute top-full left-0 right-0 bg-white border-b border-border shadow-lg mobile-menu-open z-50">
-                    <div className="container mx-auto px-4 py-4">
+                    <div className="container mx-auto px-1 sm:px-4 py-4">
                       <nav className="flex flex-col space-y-3">
                         <Button 
                           variant={paginaAtual === 'home' ? 'default' : 'ghost'}
@@ -1422,7 +1422,7 @@ function App() {
           <div className="absolute inset-0 hero-gradient opacity-80"></div>
         </div>
         
-        <div className="container mx-auto px-2 sm:px-4 relative z-10">
+        <div className="container mx-auto px-1 sm:px-4 relative z-10">
           <div className="text-center mb-8">
             {getStatusBadge(eventoDestaque.statusAtual)}
             <h2 className="text-xl sm:text-3xl md:text-5xl font-bold mb-4 font-display drop-shadow-lg">{eventoDestaque.titulo}</h2>
@@ -1461,7 +1461,7 @@ function App() {
           
           {/* Carrossel de Notícias */}
           {eventoDestaque?.noticias && eventoDestaque.noticias.length > 0 && (
-            <div className="px-2 sm:px-4">
+            <div className="px-1 sm:px-4">
               <NewsCarousel 
                 noticias={eventoDestaque.noticias}
                 autoPlay={true}
@@ -1602,7 +1602,7 @@ function App() {
 
       {/* Container do Evento em Destaque */}
       {eventoDestaque && (
-      <div className="event-detail-container bg-white rounded-xl p-3 sm:p-8 mx-1 sm:mx-6 mb-6 sm:mb-8 relative border-2 border-gray-200 shadow-lg">
+      <div className="event-detail-container bg-white rounded-xl p-2 sm:p-8 mx-0 sm:mx-6 mb-6 sm:mb-8 relative border-2 border-gray-200 shadow-lg">
         {/* Badge de Destaque */}
         <div className="absolute -top-3 left-4 bg-gradient-to-r from-orange-500 to-red-500 text-white px-4 py-1 rounded-full text-sm font-bold shadow-lg z-10">
           ⭐ EVENTO EM DESTAQUE
@@ -1624,7 +1624,7 @@ function App() {
             
             {/* Conteúdo sobreposto na imagem */}
             <div className="absolute inset-0 flex items-center justify-center">
-              <div className="text-center space-y-3 sm:space-y-6 px-2 sm:px-6">
+              <div className="text-center space-y-3 sm:space-y-6 px-1 sm:px-6">
                 {/* Título Principal com Visual Aprimorado */}
                 <div className="relative">
                   <div className="text-center mb-2 sm:mb-4">
@@ -1727,7 +1727,7 @@ function App() {
         </div>
 
         {/* Navegação das Abas */}
-        <div className="tab-navigation bg-gray-50/80 backdrop-blur-sm rounded-xl sm:rounded-2xl p-1 sm:p-2 mx-1 sm:mx-6 mb-4 sm:mb-8 border border-gray-200 shadow-sm">
+        <div className="tab-navigation bg-gray-50/80 backdrop-blur-sm rounded-xl sm:rounded-2xl p-1 sm:p-2 mx-0 sm:mx-6 mb-4 sm:mb-8 border border-gray-200 shadow-sm">
           <div className="flex items-center justify-center gap-1 sm:gap-2">
             <button
               onClick={() => setActiveTab('programacao')}
